@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Lost & Found System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <h1><center>🎓GLA🎓</center><center>Campus Lost & Found</center></h1>
+        <p class="subtitle">Select your role to continue</p>
+        
+        <div class="role-selector">
+            <div class="role-card" onclick="selectRole('admin')">
+                <div class="role-icon">👨‍💼</div>
+                <div class="role-title">Admin</div>
+                <div class="role-desc">Manage all reports</div>
+            </div>
+            <div class="role-card" onclick="selectRole('user')">
+                <div class="role-icon">👨‍🎓</div>
+                <div class="role-title">Student</div>
+                <div class="role-desc">Report & track items</div>
+            </div>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="loginEmail">Email</label>
+                <input type="email" id="loginEmail" required placeholder="your.email@university.edu">
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" required placeholder="Enter password">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+            <p style="text-align: center; margin-top: 15px; color: #718096; font-size: 0.9em;">
+                Demo: admin@university.edu / user@university.edu (any password)
+            </p>
+        </form>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="container hidden">
+        <div id="notification" class="notification"></div>
+        
+        <header>
+            <div class="header-left">
+                <h1>🎓 Lost & Found Admin</h1>
+            </div>
+            <div class="user-info">
+                <span class="user-badge">👨‍💼 Admin</span>
+                <button class="btn btn-small" onclick="logout()">Logout</button>
+            </div>
+        </header>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="adminTotalItems">47</div>
+                <div class="stat-label">Total Reports</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="adminPending">8</div>
+                <div class="stat-label">Pending Review</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="adminReturned">23</div>
+                <div class="stat-label">Items Returned</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="adminActive">16</div>
+                <div class="stat-label">Active Cases</div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchAdminTab('all')">All Reports</button>
+            <button class="tab" onclick="switchAdminTab('pending')">Pending Review</button>
+            <button class="tab" onclick="switchAdminTab('active')">Active</button>
+            <button class="tab" onclick="switchAdminTab('returned')">Returned</button>
+        </div>
+
+        <div class="search-section">
+            <div class="search-bar">
+                <input type="text" id="adminSearch" placeholder="Search reports..." onkeyup="filterAdminItems()">
+                <select id="adminCategoryFilter" onchange="filterAdminItems()">
+                    <option value="">All Categories</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Accessories">Accessories</option>
+                    <option value="Books">Books & Stationery</option>
+                    <option value="Clothing">Clothing</option>
+                    <option value="IDs">IDs & Cards</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="items-grid" id="adminItemsGrid"></div>
+    </div>
+
+    <!-- User Dashboard -->
+    <div id="userDashboard" class="container hidden">
+        <div id="userNotification" class="notification"></div>
+        
+        <header>
+            <div class="header-left">
+                <h1>🎓 Lost & Found</h1>
+            </div>
+            <div class="user-info">
+                <span class="user-badge" id="userEmail">👨‍🎓 Student</span>
+                <button class="btn btn-small" onclick="logout()">Logout</button>
+            </div>
+        </header>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="userMyReports">3</div>
+                <div class="stat-label">My Reports</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="userTotalActive">24</div>
+                <div class="stat-label">Total Active Items</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="userRecentReturns">5</div>
+                <div class="stat-label">Returned This Week</div>
+            </div>
+        </div>
+
+        <div class="action-bar">
+            <button class="btn btn-primary" onclick="openReportModal('lost')">📢 Report Lost Item</button>
+            <button class="btn btn-secondary" onclick="openReportModal('found')">✅ Report Found Item</button>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchUserTab('all')">Browse All</button>
+            <button class="tab" onclick="switchUserTab('myReports')">My Reports</button>
+            <button class="tab" onclick="switchUserTab('lost')">Lost Items</button>
+            <button class="tab" onclick="switchUserTab('found')">Found Items</button>
+        </div>
+
+        <div class="search-section">
+            <div class="search-bar">
+                <input type="text" id="userSearch" placeholder="Search items..." onkeyup="filterUserItems()">
+                <select id="userCategoryFilter" onchange="filterUserItems()">
+                    <option value="">All Categories</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Accessories">Accessories</option>
+                    <option value="Books">Books & Stationery</option>
+                    <option value="Clothing">Clothing</option>
+                    <option value="IDs">IDs & Cards</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="items-grid" id="userItemsGrid"></div>
+    </div>
+
+    <!-- Report Modal -->
+    <div class="modal" id="reportModal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Report Lost Item</h2>
+            <form id="reportForm">
+                <div class="form-group">
+                    <label for="itemName">Item Name *</label>
+                    <input type="text" id="itemName" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category *</label>
+                    <select id="category" required>
+                        <option value="">Select Category</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Accessories">Accessories</option>
+                        <option value="Books">Books & Stationery</option>
+                        <option value="Clothing">Clothing</option>
+                        <option value="IDs">IDs & Cards</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" placeholder="Provide detailed information..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="location">Location *</label>
+                    <input type="text" id="location" placeholder="Where was it lost/found?" required>
+                </div>
+                <div class="form-group">
+                    <label for="date">Date *</label>
+                    <input type="date" id="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="contactPhone">Contact Phone</label>
+                    <input type="text" id="contactPhone" placeholder="Optional">
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Submit Report</button>
+                    <button type="button" class="btn close-btn" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
